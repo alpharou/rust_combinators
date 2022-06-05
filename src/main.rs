@@ -13,28 +13,26 @@ fn main() {
 		"Anatoliy 4.0",
 	];
 
-	let mut good_students = vec![];
-
-	for s in students {
-		let mut s = s.split(' ');
-		let name = s.next();
-		let gpa = s.next();
-
-		if name.is_some() && gpa.is_some() {
-
-			let name = name.unwrap().to_owned();
-			let gpa = gpa.unwrap().to_owned(); 
+	//Using an iterator, a type of combinator
+	let good_students: Vec<Student> = students.iter()
 	
-			let gpa = gpa.parse::<f32>();
-	
-			if gpa.is_ok() {
-				let gpa = gpa.unwrap();
-				if gpa >= 3.5 {
-					good_students.push(Student{name, gpa});
-				}
-			}
-		}
-	}
+		//Chain it with a map method, which takes a closure to transform the input parameter into another type, in this case an Optional.
+		.map(|s| {
+			let mut s = s.split(' ');
+			let name = s.next()?.to_owned();
+			let gpa = s.next()?.parse::<f32>().ok()?;
+
+			Some(Student {name, gpa})
+		})
+
+		//Flatten combinator will consume the passed iterator and return a "flattened" version. In this case, it will resolve Optionals into either Some, or None. The latter will be discarded.
+		.flatten()
+
+		//The filter combinator will discard any Student that doesn't satisfy the closure
+		.filter(|s| s.gpa >= 3.5)
+
+		//And finally, the collect combinator will turn the iterator into a plain &Student list
+		.collect();
 
 	for s in good_students {
 		println!("{:?}", s);

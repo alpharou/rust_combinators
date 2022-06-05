@@ -13,6 +13,31 @@ fn main() {
 		"Anatoliy 4.0",
 	];
 
+	let mut good_students = vec![];
+
+	for s in students {
+		let mut s = s.split(' ');
+		let name = s.next();
+		let gpa = s.next();
+
+		if name.is_some() && gpa.is_some() {
+
+			let name = name.unwrap().to_owned();
+			let gpa = gpa.unwrap().to_owned(); 
+	
+			let gpa = gpa.parse::<f32>();
+	
+			if gpa.is_ok() {
+				let gpa = gpa.unwrap();
+				if gpa >= 3.5 {
+					good_students.push(Student{name, gpa});
+				}
+			}
+		}
+	}
+
+	for s in good_students {
+		println!("{:?}", s);
+	}
+	
 }
-//Create vector of Student objects.
-//Only include students with a GPA 3.5 or higher
